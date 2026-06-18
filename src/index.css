@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #f8f9fc;
+  color: #111827;
+  margin: 0;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(400%); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fill-bar {
+  from { width: 0%; }
+  to { width: var(--bar-width); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.4s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease forwards;
+}
+
+.score-bar {
+  animation: fill-bar 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+  width: 0%;
+}
+
+.chip {
+  @apply px-3 py-1.5 rounded-lg border text-sm font-medium cursor-pointer transition-all select-none;
+}
+
+.chip-inactive {
+  @apply border-gray-200 bg-white text-gray-600 hover:border-primary-400 hover:text-primary-600;
+}
+
+.chip-active {
+  @apply border-primary-500 bg-primary-500 text-white shadow-sm;
+}
+
+.card {
+  @apply bg-white border border-gray-100 rounded-xl shadow-sm;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
