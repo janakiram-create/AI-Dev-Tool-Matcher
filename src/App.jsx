@@ -2,8 +2,34 @@ import React, { useState, useEffect } from 'react';
 import InputPanel from './components/InputPanel.jsx';
 import ProcessingState from './components/ProcessingState.jsx';
 import ResultsPanel from './components/ResultsPanel.jsx';
+import LoginPage from './components/LoginPage.jsx';
+import RoleDashboard from './components/RoleDashboard.jsx';
+import { Zap, LogOut, Code2, Users, Shield } from 'lucide-react';
+
+const ROLE_META = {
+  developer: { Icon: Code2,  color: 'bg-primary-500', label: 'Developer' },
+  lead:      { Icon: Users,  color: 'bg-emerald-500', label: 'Team Lead' },
+  admin:     { Icon: Shield, color: 'bg-rose-500',    label: 'Admin' },
+};
 
 export default function App() {
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('auth-devtool');
+      return saved ? JSON.parse(saved) : null;
+    } catch { return null; }
+  });
+
+  const handleLogin = (u) => {
+    setUser(u);
+    localStorage.setItem('auth-devtool', JSON.stringify(u));
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('auth-devtool');
+  };
+
   const [step, setStep] = useState('input'); // 'input' | 'loading' | 'results'
   const [projectTypes, setProjectTypes] = useState([]);
   const [needs, setNeeds] = useState([]);
@@ -241,8 +267,46 @@ export default function App() {
     history.replaceState({}, '', window.location.pathname);
   };
 
+  if (!user) return <LoginPage onLogin={handleLogin} />;
+
+  const meta = ROLE_META[user.role];
+  const RoleIcon = meta.Icon;
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Persistent user bar */}
+      <div className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-10 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md bg-primary-500 flex items-center justify-center">
+              <Zap className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span className="text-sm font-semibold text-gray-800">AI Dev Tool Matcher</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className={`w-6 h-6 rounded-md ${meta.color} flex items-center justify-center flex-shrink-0`}>
+              <RoleIcon className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span className="text-sm text-gray-700 font-medium hidden sm:block">{user.name}</span>
+            <span className="text-xs text-gray-400 hidden md:block">·</span>
+            <span className="text-xs font-medium text-gray-400 capitalize hidden md:block">{meta.label}</span>
+            <button
+              onClick={handleLogout}
+              title="Sign out"
+              className="ml-1 flex items-center gap-1 text-xs text-gray-400 hover:text-gray-700 transition-colors px-2 py-1 rounded hover:bg-gray-100"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:block">Sign out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {step === 'input' && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
+          <RoleDashboard user={user} />
+        </div>
+      )}
       {step === 'input' && (
         <InputPanel
           onSubmit={handleSubmit}

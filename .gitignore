@@ -6,3 +6,6 @@ dist/
 docs/_screens.html
 docs/*.png
 package-lock.json
+
+.vercel
+*.pdf
